@@ -1,5 +1,8 @@
 package me.vinitagrawal.bullets.view;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,11 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import me.vinitagrawal.bullets.BuildConfig;
@@ -34,6 +39,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Map<String, String> queryOptions = new HashMap<>();
+    TextView noDataTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,8 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        noDataTextView = (TextView) findViewById(R.id.info_message);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -121,27 +129,46 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void fetchStories() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(buildGsonConverter())
-                .build();
+        if(isNetworkAvailable()) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Constants.BASE_URL)
+                    .addConverterFactory(buildGsonConverter())
+                    .build();
 
-        ApiService apiService = retrofit.create(ApiService.class);
+            ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<Story> getStories = apiService.getStories(getHeaderOptions(), queryOptions);
-        getStories.enqueue(new Callback<Story>() {
-            @Override
-            public void onResponse(Call<Story> call, Response<Story> response) {
-                if(response.body()!=null) {
-                    Log.d("Articles", response.body().getArticleList().size()+"");
+            Call<Story> getStories = apiService.getStories(getHeaderOptions(), queryOptions);
+            getStories.enqueue(new Callback<Story>() {
+                @Override
+                public void onResponse(Call<Story> call, Response<Story> response) {
+                    if (response.body() != null) {
+                        List<Article> articleList = response.body().getArticleList();
+                        if(!articleList.isEmpty()) {
+                            Log.d("Articles", articleList.size() + "");
+                        }
+                        else {
+                            noDataTextView.setText(R.string.news_unavailable);
+                        }
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Story> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<Story> call, Throwable t) {
+                    noDataTextView.setText(R.string.api_error_message);
+                    t.printStackTrace();
+                }
+            });
+        }
+        else {
+            noDataTextView.setText(R.string.network_unavailable);
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 
     private Map<String, String> getHeaderOptions() {

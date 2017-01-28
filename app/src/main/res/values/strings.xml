@@ -16,4 +16,7 @@
     <string name="action_sort_by">Sort By</string>
     <string name="action_sort_by_recency">Recent</string>
     <string name="action_sort_by_trending">Trending</string>
+    <string name="network_unavailable">Network Unavailable</string>
+    <string name="news_unavailable">News Unavailable</string>
+    <string name="api_error_message">Api Error</string>
 </resources>
