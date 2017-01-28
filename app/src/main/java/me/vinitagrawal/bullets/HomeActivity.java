@@ -79,21 +79,24 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id) {
+            case R.id.nav_home :
+                break;
+            case R.id.nav_news_politics:
+                break;
+            case R.id.nav_science_technology:
+                break;
+            case R.id.nav_health_fitness:
+                break;
+            case R.id.nav_entertainment:
+                break;
+            case R.id.nav_food_drink:
+                break;
+            case R.id.nav_travel:
+                break;
+            case R.id.nav_sports:
+                break;
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

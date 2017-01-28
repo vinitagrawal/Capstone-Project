@@ -5,4 +5,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_news_and_politics"><![CDATA[News & Politics]]></string>
+    <string name="nav_science_and_technology"><![CDATA[Science & Technology]]></string>
+    <string name="nav_health_and_fitness"><![CDATA[Health & Fitness]]></string>
+    <string name="nav_entertainment">Entertainment</string>
+    <string name="nav_food_and_drink"><![CDATA[Food & Drink]]></string>
+    <string name="nav_travel">Travel</string>
+    <string name="nav_sports">Sports</string>
 </resources>
