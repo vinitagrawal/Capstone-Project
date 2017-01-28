@@ -9,12 +9,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,12 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 import me.vinitagrawal.bullets.BuildConfig;
-import me.vinitagrawal.bullets.Constants;
 import me.vinitagrawal.bullets.R;
+import me.vinitagrawal.bullets.Utility.Constants;
+import me.vinitagrawal.bullets.data.ArticleDbOperations;
 import me.vinitagrawal.bullets.model.Article;
 import me.vinitagrawal.bullets.model.Story;
 import me.vinitagrawal.bullets.service.ApiService;
 import me.vinitagrawal.bullets.service.ArticleDeserializer;
+import me.vinitagrawal.bullets.view.adapter.ArticleAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,13 +43,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        ArticleAdapter.ItemClickCallback {
 
+    private static final String ARTICLE_SAVEDINSTANCE_KEY = "articleArrayList";
     private Map<String, String> queryOptions = new HashMap<>();
     private String category;
 
     private TextView noDataTextView;
     private RecyclerView mRecyclerView;
+    private ArticleAdapter articleAdapter;
     private ArrayList<Article> articleArrayList = new ArrayList<>();
 
     @Override
@@ -66,9 +74,22 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setCategory(Constants.CATEGORY_HOME);
-        setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_HOTNESS);
-        fetchStories();
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey(ARTICLE_SAVEDINSTANCE_KEY)) {
+            articleAdapter = new ArticleAdapter(this, articleArrayList);
+            mRecyclerView.setAdapter(articleAdapter);
+
+            setCategory(Constants.CATEGORY_HOME);
+            setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_HOTNESS);
+            fetchStories();
+        } else {
+            articleArrayList = savedInstanceState.getParcelableArrayList(ARTICLE_SAVEDINSTANCE_KEY);
+            articleAdapter = new ArticleAdapter(this, articleArrayList);
+            mRecyclerView.setAdapter(articleAdapter);
+        }
+
     }
 
     @Override
@@ -108,6 +129,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        clearRecyclerView();
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_home:
@@ -143,12 +165,24 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(ARTICLE_SAVEDINSTANCE_KEY, articleArrayList);
+    }
+    
     private void setQueryOption(String name, String value) {
         queryOptions.put(name, value);
     }
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public void clearRecyclerView() {
+        mRecyclerView.setVisibility(View.GONE);
+        articleArrayList.clear();
+        articleAdapter.notifyDataSetChanged();
     }
 
     private void fetchStories() {
@@ -168,12 +202,15 @@ public class HomeActivity extends AppCompatActivity
                 @Override
                 public void onResponse(Call<Story> call, Response<Story> response) {
                     if (response.body() != null) {
-                        List<Article> articleList = response.body().getArticleList();
-                        if (!articleList.isEmpty()) {
-                            Log.d("Articles", articleList.size() + "");
-                            saveArticles(articleList);
+                        articleArrayList.addAll(response.body().getArticleList());
+                        if (!articleArrayList.isEmpty()) {
+                            Log.d("Articles", articleArrayList.size() + "");
+                            mRecyclerView.setVisibility(View.VISIBLE);
+                            saveArticles(articleArrayList);
+                            articleAdapter.notifyDataSetChanged();
                             noDataTextView.setText(R.string.empty);
                         } else {
+                            mRecyclerView.setVisibility(View.GONE);
                             noDataTextView.setText(R.string.news_unavailable);
                         }
                     }
@@ -186,6 +223,7 @@ public class HomeActivity extends AppCompatActivity
                 }
             });
         } else {
+            mRecyclerView.setVisibility(View.GONE);
             noDataTextView.setText(R.string.network_unavailable);
         }
     }
@@ -216,5 +254,10 @@ public class HomeActivity extends AppCompatActivity
         Gson gson = gsonBuilder.setDateFormat(Constants.DATE_FORMAT).create();
 
         return GsonConverterFactory.create(gson);
+    }
+
+    @Override
+    public void onItemSelected(Article article) {
+        Toast.makeText(this, article.toString(), Toast.LENGTH_SHORT).show();
     }
 }

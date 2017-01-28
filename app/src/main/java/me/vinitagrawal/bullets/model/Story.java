@@ -2,14 +2,14 @@ package me.vinitagrawal.bullets.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Story {
 
     @SerializedName("stories")
-    List<Article> articleList;
+    ArrayList<Article> articleList;
 
-    public List<Article> getArticleList() {
+    public ArrayList<Article> getArticleList() {
         return articleList;
     }
 

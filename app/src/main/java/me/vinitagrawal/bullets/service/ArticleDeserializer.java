@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import me.vinitagrawal.bullets.Constants;
+import me.vinitagrawal.bullets.Utility.Constants;
 import me.vinitagrawal.bullets.model.Article;
 
 public class ArticleDeserializer implements JsonDeserializer<Article> {

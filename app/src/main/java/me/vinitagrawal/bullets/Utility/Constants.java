@@ -1,4 +1,4 @@
-package me.vinitagrawal.bullets;
+package me.vinitagrawal.bullets.Utility;
 
 public class Constants {
 

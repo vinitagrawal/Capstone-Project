@@ -1,11 +1,20 @@
 package me.vinitagrawal.bullets.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class Article {
+import static me.vinitagrawal.bullets.Utility.Constants.ARRAY_DIVIDER;
+import static me.vinitagrawal.bullets.Utility.Utility.getDateAsDate;
+import static me.vinitagrawal.bullets.Utility.Utility.getDateAsString;
+
+public class Article implements Parcelable {
 
     @SerializedName("id")
     private Integer articleId;
@@ -21,6 +30,31 @@ public class Article {
 
     public Article() {
     }
+
+    protected Article(Parcel in) {
+        articleId = in.readInt();
+        title = in.readString();
+        media = in.readString();
+        permalink = in.readString();
+        sourceName = in.readString();
+        sourceLogoUrl = in.readString();
+        author = in.readString();
+        category = in.readString();
+        sentences = in.createStringArrayList();
+        publishedAt = getDateAsDate(in.readString());
+    }
+
+    public static final Creator<Article> CREATOR = new Creator<Article>() {
+        @Override
+        public Article createFromParcel(Parcel in) {
+            return new Article(in);
+        }
+
+        @Override
+        public Article[] newArray(int size) {
+            return new Article[size];
+        }
+    };
 
     public Integer getArticleId() {
         return articleId;
@@ -102,6 +136,10 @@ public class Article {
         this.category = category;
     }
 
+    private List<String> getSentencesAsList(String sentences) {
+        return Arrays.asList(TextUtils.split(sentences, ARRAY_DIVIDER));
+    }
+
     @Override
     public String toString() {
         return "Article{" +
@@ -116,5 +154,24 @@ public class Article {
                 ", sentences=" + sentences +
                 ", publishedAt=" + publishedAt +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(articleId);
+        dest.writeString(title);
+        dest.writeString(media);
+        dest.writeString(permalink);
+        dest.writeString(sourceName);
+        dest.writeString(sourceLogoUrl);
+        dest.writeString(author);
+        dest.writeString(category);
+        dest.writeStringList(sentences);
+        dest.writeString(getDateAsString(publishedAt));
     }
 }

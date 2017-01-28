@@ -20,4 +20,6 @@
     <string name="news_unavailable">News Unavailable</string>
     <string name="api_error_message">Api Error</string>
     <string name="empty"></string>
+    <string name="article_image_content_description">Article Image</string>
+    <string name="source_logo_content_description">Source Logo</string>
 </resources>
