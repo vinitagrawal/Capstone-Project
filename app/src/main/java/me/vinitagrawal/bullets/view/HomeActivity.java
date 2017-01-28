@@ -20,8 +20,10 @@ import java.util.Map;
 import me.vinitagrawal.bullets.BuildConfig;
 import me.vinitagrawal.bullets.Constants;
 import me.vinitagrawal.bullets.R;
+import me.vinitagrawal.bullets.model.Article;
 import me.vinitagrawal.bullets.model.Story;
 import me.vinitagrawal.bullets.service.ApiService;
+import me.vinitagrawal.bullets.service.ArticleDeserializer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -151,6 +153,7 @@ public class HomeActivity extends AppCompatActivity
 
     private static GsonConverterFactory buildGsonConverter() {
         GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Article.class, new ArticleDeserializer());
         Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 
         return GsonConverterFactory.create(gson);
