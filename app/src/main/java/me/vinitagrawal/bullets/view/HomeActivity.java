@@ -7,17 +7,31 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.HashMap;
 import java.util.Map;
 
+import me.vinitagrawal.bullets.BuildConfig;
+import me.vinitagrawal.bullets.Constants;
 import me.vinitagrawal.bullets.R;
+import me.vinitagrawal.bullets.model.Story;
+import me.vinitagrawal.bullets.service.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Map<String, String> queryOptions;
+    Map<String, String> queryOptions = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +48,10 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_TRENDING);
+        setQueryOption(Constants.CATEGORY_ID_KEY, Constants.CATEGORY_TRAVEL);
+        fetchStories();
     }
 
     @Override
@@ -98,5 +116,43 @@ public class HomeActivity extends AppCompatActivity
 
     private void setQueryOption(String name, String value) {
         queryOptions.put(name, value);
+    }
+
+    private void fetchStories() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(buildGsonConverter())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        Call<Story> getStories = apiService.getStories(getHeaderOptions(), queryOptions);
+        getStories.enqueue(new Callback<Story>() {
+            @Override
+            public void onResponse(Call<Story> call, Response<Story> response) {
+                if(response.body()!=null) {
+                    Log.d("Articles", response.body().getArticleList().size()+"");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Story> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private Map<String, String> getHeaderOptions() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(Constants.APPLICATION_ID, BuildConfig.THE_AYLIEN_API_ID_VALUE);
+        map.put(Constants.APPLICATION_KEY, BuildConfig.THE_AYLIEN_API_KEY_VALUE);
+        return map;
+    }
+
+    private static GsonConverterFactory buildGsonConverter() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+
+        return GsonConverterFactory.create(gson);
     }
 }

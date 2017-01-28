@@ -89,4 +89,19 @@ public class Article {
     public void setPublishedAt(Date publishedAt) {
         this.publishedAt = publishedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", media='" + media + '\'' +
+                ", permalink='" + permalink + '\'' +
+                ", sourceName='" + sourceName + '\'' +
+                ", sourceLogoUrl='" + sourceLogoUrl + '\'' +
+                ", author='" + author + '\'' +
+                ", sentences=" + sentences +
+                ", publishedAt=" + publishedAt +
+                '}';
+    }
 }
