@@ -1,4 +1,4 @@
-package me.vinitagrawal.bullets;
+package me.vinitagrawal.bullets.view;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,8 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Map;
+
+import me.vinitagrawal.bullets.R;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    Map<String, String> queryOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +88,15 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.nav_sports:
                 break;
+            default:
+                break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void setQueryOption(String name, String value) {
+        queryOptions.put(name, value);
     }
 }
