@@ -13,4 +13,7 @@
     <string name="nav_food_and_drink"><![CDATA[Food & Drink]]></string>
     <string name="nav_travel">Travel</string>
     <string name="nav_sports">Sports</string>
+    <string name="action_sort_by">Sort By</string>
+    <string name="action_sort_by_recency">Recent</string>
+    <string name="action_sort_by_trending">Trending</string>
 </resources>
