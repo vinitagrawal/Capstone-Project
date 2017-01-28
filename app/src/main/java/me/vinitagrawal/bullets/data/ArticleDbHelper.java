@@ -17,19 +17,18 @@ public class ArticleDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String textColumnDescription = " TEXT NOT NULL, ";
         final String CREATE_ARTICLE_TABLE = "CREATE TABLE " + ArticleEntry.TABLE_NAME + " (" +
                 ArticleEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-                ArticleEntry.COLUMN_ARTICLE_ID + "INTEGER NOT NULL" +
-                ArticleEntry.COLUMN_ARTICLE_TITLE + textColumnDescription +
-                ArticleEntry.COLUMN_ARTICLE_SENTENCES + textColumnDescription +
-                ArticleEntry.COLUMN_ARTICLE_CATEGORY + textColumnDescription +
-                ArticleEntry.COLUMN_ARTICLE_MEDIA + textColumnDescription +
-                ArticleEntry.COLUMN_ARTICLE_SOURCE_NAME + textColumnDescription +
-                ArticleEntry.COLUMN_ARTICLE_SOURCE_LOGO_URL + textColumnDescription +
-                ArticleEntry.COLUMN_ARTICLE_AUTHOR + textColumnDescription +
-                ArticleEntry.COLUMN_ARTICLE_PERMALINK + textColumnDescription +
+                ArticleEntry.COLUMN_ARTICLE_ID + " INTEGER NOT NULL, " +
+                ArticleEntry.COLUMN_ARTICLE_TITLE + " TEXT NOT NULL, " +
+                ArticleEntry.COLUMN_ARTICLE_SENTENCES + " TEXT , " +
+                ArticleEntry.COLUMN_ARTICLE_CATEGORY + " TEXT NOT NULL, " +
+                ArticleEntry.COLUMN_ARTICLE_MEDIA + " TEXT , " +
+                ArticleEntry.COLUMN_ARTICLE_SOURCE_NAME + " TEXT NOT NULL, " +
+                ArticleEntry.COLUMN_ARTICLE_SOURCE_LOGO_URL + " TEXT , " +
+                ArticleEntry.COLUMN_ARTICLE_AUTHOR + " TEXT , " +
+                ArticleEntry.COLUMN_ARTICLE_PERMALINK + " TEXT , " +
                 ArticleEntry.COLUMN_ARTICLE_PUBLISHED_AT + " TEXT NOT NULL " +
                 " );";
 

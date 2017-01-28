@@ -21,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="me.vinitagrawal.bullets"
+            android:name=".data.ArticleProvider" />
     </application>
 
 </manifest>
