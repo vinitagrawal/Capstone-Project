@@ -10,11 +10,11 @@
 
         <menu>
             <item
+                android:id="@+id/sortHotness"
+                android:title="@string/action_sort_by_trending" />
+            <item
                 android:id="@+id/sortRecent"
                 android:title="@string/action_sort_by_recency" />
-            <item
-                android:id="@+id/sortTrending"
-                android:title="@string/action_sort_by_trending" />
         </menu>
     </item>
 </menu>
