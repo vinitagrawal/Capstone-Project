@@ -53,7 +53,11 @@ public class ArticleDbOperations {
     }
 
     private String getSentencesAsString(List<String> sentences) {
-        return TextUtils.join(ARRAY_DIVIDER, sentences);
+        if(sentences!=null) {
+            return TextUtils.join(ARRAY_DIVIDER, sentences);
+        } else {
+            return null;
+        }
     }
 
 }

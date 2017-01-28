@@ -171,6 +171,7 @@ public class HomeActivity extends AppCompatActivity
                         List<Article> articleList = response.body().getArticleList();
                         if (!articleList.isEmpty()) {
                             Log.d("Articles", articleList.size() + "");
+                            saveArticles(articleList);
                             noDataTextView.setText(R.string.empty);
                         } else {
                             noDataTextView.setText(R.string.news_unavailable);
@@ -187,6 +188,12 @@ public class HomeActivity extends AppCompatActivity
         } else {
             noDataTextView.setText(R.string.network_unavailable);
         }
+    }
+
+    private void saveArticles(List<Article> articleList) {
+        ArticleDbOperations articleDbOperations = new ArticleDbOperations(this);
+        articleDbOperations.deleteArticles(category);
+        articleDbOperations.addArticles(articleList, category);
     }
 
     private boolean isNetworkAvailable() {
