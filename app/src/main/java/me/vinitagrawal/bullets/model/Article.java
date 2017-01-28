@@ -1,29 +1,33 @@
 package me.vinitagrawal.bullets.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.List;
 
 public class Article {
 
-    private Integer id;
+    @SerializedName("id")
+    private Integer articleId;
     private String title;
     private String media;
     private String permalink;
     private String sourceName;
     private String sourceLogoUrl;
     private String author;
+    private String category;
     private List<String> sentences;
     private Date publishedAt;
 
     public Article() {
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public String getTitle() {
@@ -90,16 +94,25 @@ public class Article {
         this.publishedAt = publishedAt;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
-                "id=" + id +
+                "articleId=" + articleId +
                 ", title='" + title + '\'' +
                 ", media='" + media + '\'' +
                 ", permalink='" + permalink + '\'' +
                 ", sourceName='" + sourceName + '\'' +
                 ", sourceLogoUrl='" + sourceLogoUrl + '\'' +
                 ", author='" + author + '\'' +
+                ", category=" + category +
                 ", sentences=" + sentences +
                 ", publishedAt=" + publishedAt +
                 '}';

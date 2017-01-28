@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import me.vinitagrawal.bullets.Constants;
 import me.vinitagrawal.bullets.model.Article;
 
 public class ArticleDeserializer implements JsonDeserializer<Article> {
@@ -24,11 +25,11 @@ public class ArticleDeserializer implements JsonDeserializer<Article> {
         Article article = new Article();
 
         try {
-            article.setId(jsonObject.get("id").getAsInt());
+            article.setArticleId(jsonObject.get("id").getAsInt());
             article.setTitle(jsonObject.get("title").getAsString());
 
             //deserialize date
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.US);
             article.setPublishedAt(simpleDateFormat.parse(jsonObject.get("published_at").getAsString()));
 
             //deserialize source
