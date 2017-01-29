@@ -3,6 +3,7 @@ package me.vinitagrawal.bullets.view.adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -74,7 +74,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         holder.titleTextView.setText(article.getTitle());
         holder.sourceTextView.setText(article.getSourceName());
-        holder.timeTextView.setText(getDateInProperFormat(article.getPublishedAt()));
+        holder.timeTextView.setText(getRelativeDate(article.getPublishedAt()));
 
         holder.articleCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,9 +84,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         });
     }
 
-    private String getDateInProperFormat(Date publishedAt) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd");
-        return simpleDateFormat.format(publishedAt);
+    private CharSequence getRelativeDate(Date publishedAt) {
+        return DateUtils.getRelativeTimeSpanString(publishedAt.getTime(), System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS);
     }
 
     @Override

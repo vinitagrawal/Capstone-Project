@@ -154,11 +154,11 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.sortHotness) {
             setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_HOTNESS);
-            fetchStoriesFromDb();
+            fetchStories();
             return true;
         } else if (id == R.id.sortRecent) {
             setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_RECENCY);
-            fetchStoriesFromDb();
+            fetchStories();
             return true;
         }
 
