@@ -1,14 +1,20 @@
 package me.vinitagrawal.bullets.view;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +36,7 @@ import java.util.Map;
 import me.vinitagrawal.bullets.BuildConfig;
 import me.vinitagrawal.bullets.R;
 import me.vinitagrawal.bullets.Utility.Constants;
+import me.vinitagrawal.bullets.data.ArticleContract;
 import me.vinitagrawal.bullets.data.ArticleDbOperations;
 import me.vinitagrawal.bullets.model.Article;
 import me.vinitagrawal.bullets.model.Story;
@@ -44,16 +51,42 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
+        LoaderManager.LoaderCallbacks<Cursor>,
         ArticleAdapter.ItemClickCallback {
 
+    private static final int ARTICLE_LOADER = 0;
     private static final String ARTICLE_SAVEDINSTANCE_KEY = "articleArrayList";
     private Map<String, String> queryOptions = new HashMap<>();
-    private String category;
 
+    private String category;
     private TextView noDataTextView;
     private RecyclerView mRecyclerView;
     private ArticleAdapter articleAdapter;
+
     private ArrayList<Article> articleArrayList = new ArrayList<>();
+
+    private static final String[] ARTICLE_COLUMNS = {
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_ID,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_TITLE,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_SENTENCES,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_CATEGORY,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_MEDIA,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_SOURCE_NAME,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_SOURCE_LOGO_URL,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_AUTHOR,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_PERMALINK,
+            ArticleContract.ArticleEntry.COLUMN_ARTICLE_PUBLISHED_AT
+    };
+    public static final int COL_ARTICLE_ID = 0;
+    public static final int COL_ARTICLE_TITLE = 1;
+    public static final int COL_ARTICLE_SENTENCES = 2;
+    public static final int COL_ARTICLE_CATEGORY = 3;
+    public static final int COL_ARTICLE_MEDIA = 4;
+    public static final int COL_ARTICLE_SOURCE_NAME = 5;
+    public static final int COL_ARTICLE_SOURCE_LOGO_URL = 6;
+    public static final int COL_ARTICLE_AUTHOR = 7;
+    public static final int COL_ARTICLE_PERMALINK = 8;
+    public static final int COL_ARTICLE_PUBLISHED_AT = 9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +108,13 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }
+        else{
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }
 
         if (savedInstanceState == null || !savedInstanceState.containsKey(ARTICLE_SAVEDINSTANCE_KEY)) {
             articleAdapter = new ArticleAdapter(this, articleArrayList);
@@ -83,10 +122,11 @@ public class HomeActivity extends AppCompatActivity
 
             setCategory(Constants.CATEGORY_HOME);
             setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_HOTNESS);
-            fetchStories();
+            fetchStoriesFromDb();
         } else {
             articleArrayList = savedInstanceState.getParcelableArrayList(ARTICLE_SAVEDINSTANCE_KEY);
             articleAdapter = new ArticleAdapter(this, articleArrayList);
+            mRecyclerView.setVisibility(View.VISIBLE);
             mRecyclerView.setAdapter(articleAdapter);
         }
 
@@ -114,11 +154,11 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.sortHotness) {
             setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_HOTNESS);
-            fetchStories();
+            fetchStoriesFromDb();
             return true;
         } else if (id == R.id.sortRecent) {
             setQueryOption(Constants.SORT_BY_KEY, Constants.SORT_BY_RECENCY);
-            fetchStories();
+            fetchStoriesFromDb();
             return true;
         }
 
@@ -129,7 +169,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        clearRecyclerView();
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_home:
@@ -159,7 +198,7 @@ public class HomeActivity extends AppCompatActivity
             default:
                 break;
         }
-        fetchStories();
+        fetchStoriesFromDb();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -185,9 +224,16 @@ public class HomeActivity extends AppCompatActivity
         articleAdapter.notifyDataSetChanged();
     }
 
+    public void fetchStoriesFromDb() {
+        clearRecyclerView();
+        getSupportLoaderManager().restartLoader(ARTICLE_LOADER, null, this);
+        getSupportLoaderManager().initLoader(ARTICLE_LOADER, null, this);
+    }
+
     private void fetchStories() {
         if (isNetworkAvailable()) {
 
+            clearRecyclerView();
             setQueryOption(Constants.CATEGORY_ID_KEY, category);
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -223,8 +269,10 @@ public class HomeActivity extends AppCompatActivity
                 }
             });
         } else {
-            mRecyclerView.setVisibility(View.GONE);
-            noDataTextView.setText(R.string.network_unavailable);
+            if(articleArrayList.isEmpty()) {
+                mRecyclerView.setVisibility(View.GONE);
+                noDataTextView.setText(R.string.network_unavailable);
+            }
         }
     }
 
@@ -254,6 +302,37 @@ public class HomeActivity extends AppCompatActivity
         Gson gson = gsonBuilder.setDateFormat(Constants.DATE_FORMAT).create();
 
         return GsonConverterFactory.create(gson);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this,
+                ArticleContract.ArticleEntry.CONTENT_URI,
+                ARTICLE_COLUMNS,
+                ArticleContract.ArticleEntry.COLUMN_ARTICLE_CATEGORY + " = ?",
+                new String[]{category},
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        articleArrayList.clear();
+        if(cursor.moveToFirst()) {
+            do {
+                Article article = Article.fromCursor(cursor);
+                articleArrayList.add(article);
+            }while (cursor.moveToNext());
+        } else {
+            fetchStories();
+        }
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mRecyclerView.scrollToPosition(0);
+        articleAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     @Override

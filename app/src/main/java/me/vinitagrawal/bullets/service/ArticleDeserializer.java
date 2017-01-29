@@ -65,6 +65,10 @@ public class ArticleDeserializer implements JsonDeserializer<Article> {
                     sentences.add(summaryArray.get(i).getAsString().replaceAll("\n\n", ". ").replaceAll("\n", ". "));
                 }
                 article.setSentences(sentences);
+            } else {
+                ArrayList<String> sentences = new ArrayList<>(1);
+                sentences.add(jsonObject.get("body").getAsString().replaceAll("\n",""));
+                article.setSentences(sentences);
             }
 
             return article;

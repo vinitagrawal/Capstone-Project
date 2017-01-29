@@ -1,5 +1,6 @@
 package me.vinitagrawal.bullets.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -10,9 +11,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import me.vinitagrawal.bullets.view.HomeActivity;
+
 import static me.vinitagrawal.bullets.Utility.Constants.ARRAY_DIVIDER;
-import static me.vinitagrawal.bullets.Utility.Utility.getDateAsDate;
-import static me.vinitagrawal.bullets.Utility.Utility.getDateAsString;
+import static me.vinitagrawal.bullets.Utility.Utility.convertStringToDate;
+import static me.vinitagrawal.bullets.Utility.Utility.convertDateToString;
 
 public class Article implements Parcelable {
 
@@ -41,7 +44,7 @@ public class Article implements Parcelable {
         author = in.readString();
         category = in.readString();
         sentences = in.createStringArrayList();
-        publishedAt = getDateAsDate(in.readString());
+        publishedAt = convertStringToDate(in.readString());
     }
 
     public static final Creator<Article> CREATOR = new Creator<Article>() {
@@ -136,8 +139,12 @@ public class Article implements Parcelable {
         this.category = category;
     }
 
-    private List<String> getSentencesAsList(String sentences) {
-        return Arrays.asList(TextUtils.split(sentences, ARRAY_DIVIDER));
+    private static List<String> getSentencesAsList(String sentences) {
+        if(sentences!=null) {
+            return Arrays.asList(TextUtils.split(sentences, ARRAY_DIVIDER));
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -156,6 +163,21 @@ public class Article implements Parcelable {
                 '}';
     }
 
+    public static Article fromCursor(Cursor cursor) {
+        Article article = new Article();
+        article.setArticleId(cursor.getInt(HomeActivity.COL_ARTICLE_ID));
+        article.setTitle(cursor.getString(HomeActivity.COL_ARTICLE_TITLE));
+        article.setSentences(getSentencesAsList(cursor.getString(HomeActivity.COL_ARTICLE_SENTENCES)));
+        article.setCategory(cursor.getString(HomeActivity.COL_ARTICLE_CATEGORY));
+        article.setMedia(cursor.getString(HomeActivity.COL_ARTICLE_MEDIA));
+        article.setSourceName(cursor.getString(HomeActivity.COL_ARTICLE_SOURCE_NAME));
+        article.setSourceLogoUrl(cursor.getString(HomeActivity.COL_ARTICLE_SOURCE_LOGO_URL));
+        article.setAuthor(cursor.getString(HomeActivity.COL_ARTICLE_AUTHOR));
+        article.setPermalink(cursor.getString(HomeActivity.COL_ARTICLE_PERMALINK));
+        article.setPublishedAt(convertStringToDate(cursor.getString(HomeActivity.COL_ARTICLE_PUBLISHED_AT)));
+        return article;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -172,6 +194,6 @@ public class Article implements Parcelable {
         dest.writeString(author);
         dest.writeString(category);
         dest.writeStringList(sentences);
-        dest.writeString(getDateAsString(publishedAt));
+        dest.writeString(convertDateToString(publishedAt));
     }
 }

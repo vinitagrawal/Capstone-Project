@@ -62,11 +62,15 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Article article = articleList.get(position);
 
-        Picasso.with(mContext).load(article.getMedia()).into(holder.articleImageView);
+        Picasso.with(mContext).load(article.getMedia())
+                .into(holder.articleImageView);
 
-        if(article.getSourceLogoUrl()!=null && article.getSourceLogoUrl()!="") {
-            Picasso.with(mContext).load(article.getSourceLogoUrl()).into(holder.sourceImageView);
-        }
+        if(!article.getSourceLogoUrl().isEmpty()) {
+            Picasso.with(mContext).load(article.getSourceLogoUrl())
+                    .placeholder(R.color.cardview_light_background)
+                    .into(holder.sourceImageView);
+        } else
+            holder.sourceImageView.setVisibility(View.INVISIBLE);
 
         holder.titleTextView.setText(article.getTitle());
         holder.sourceTextView.setText(article.getSourceName());

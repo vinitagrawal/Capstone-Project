@@ -10,7 +10,7 @@ import me.vinitagrawal.bullets.data.ArticleContract.ArticleEntry;
 import me.vinitagrawal.bullets.model.Article;
 
 import static me.vinitagrawal.bullets.Utility.Constants.ARRAY_DIVIDER;
-import static me.vinitagrawal.bullets.Utility.Utility.getDateAsString;
+import static me.vinitagrawal.bullets.Utility.Utility.convertDateToString;
 
 public class ArticleDbOperations {
 
@@ -31,7 +31,7 @@ public class ArticleDbOperations {
             contentValues.put(ArticleEntry.COLUMN_ARTICLE_SOURCE_LOGO_URL, article.getSourceLogoUrl());
             contentValues.put(ArticleEntry.COLUMN_ARTICLE_AUTHOR, article.getAuthor());
             contentValues.put(ArticleEntry.COLUMN_ARTICLE_PERMALINK, article.getPermalink());
-            contentValues.put(ArticleEntry.COLUMN_ARTICLE_PUBLISHED_AT, getDateAsString(article.getPublishedAt()));
+            contentValues.put(ArticleEntry.COLUMN_ARTICLE_PUBLISHED_AT, convertDateToString(article.getPublishedAt()));
             contentValues.put(ArticleEntry.COLUMN_ARTICLE_CATEGORY, category);
 
             mContext.getContentResolver().insert(ArticleEntry.CONTENT_URI, contentValues);
