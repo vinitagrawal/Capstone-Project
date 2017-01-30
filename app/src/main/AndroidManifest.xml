@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.ArticleDetailActivity"
+        <activity
+            android:name=".view.activity.ArticleDetailActivity"
             android:parentActivityName=".view.activity.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -31,8 +32,21 @@
 
         <provider
             android:name=".data.ArticleProvider"
+            android:authorities="me.vinitagrawal.bullets"
+            android:exported="false" />
+
+        <receiver android:name=".view.widget.ArticlesWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/articles_widget_info" />
+        </receiver>
+        <service android:name=".view.widget.BulletsWidgetRemoteViewsService"
             android:exported="false"
-            android:authorities="me.vinitagrawal.bullets" />
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 </manifest>

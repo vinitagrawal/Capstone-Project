@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity
 
     private ArrayList<Article> articleArrayList = new ArrayList<>();
 
-    private static final String[] ARTICLE_COLUMNS = {
+    public static final String[] ARTICLE_COLUMNS = {
             ArticleContract.ArticleEntry.COLUMN_ARTICLE_ID,
             ArticleContract.ArticleEntry.COLUMN_ARTICLE_TITLE,
             ArticleContract.ArticleEntry.COLUMN_ARTICLE_SENTENCES,

@@ -24,4 +24,6 @@
     <string name="source_logo_content_description">Source Logo</string>
     <string name="bullet_symbol">&#8226;&#160;</string>
     <string name="action_share">Share</string>
+    <string name="add_widget">Add widget</string>
+    <string name="appwidget_text">Bullets Widget</string>
 </resources>
