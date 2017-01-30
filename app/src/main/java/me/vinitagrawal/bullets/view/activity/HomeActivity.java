@@ -13,6 +13,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -87,6 +88,7 @@ public class HomeActivity extends AppCompatActivity
     public static final int COL_ARTICLE_AUTHOR = 7;
     public static final int COL_ARTICLE_PERMALINK = 8;
     public static final int COL_ARTICLE_PUBLISHED_AT = 9;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,7 @@ public class HomeActivity extends AppCompatActivity
 
         noDataTextView = (TextView) findViewById(R.id.info_message);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -108,6 +111,7 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mRecyclerView.setHasFixedSize(true);
+        mSwipeRefreshLayout.setEnabled(true);
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -130,6 +134,17 @@ public class HomeActivity extends AppCompatActivity
             mRecyclerView.setAdapter(articleAdapter);
         }
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItems();
+            }
+        });
+
+    }
+
+    private void refreshItems() {
+        fetchStories();
     }
 
     @Override
@@ -233,6 +248,7 @@ public class HomeActivity extends AppCompatActivity
     private void fetchStories() {
         if (isNetworkAvailable()) {
 
+            mSwipeRefreshLayout.setRefreshing(true);
             clearRecyclerView();
             setQueryOption(Constants.CATEGORY_ID_KEY, category);
 
@@ -248,6 +264,7 @@ public class HomeActivity extends AppCompatActivity
                 @Override
                 public void onResponse(Call<Story> call, Response<Story> response) {
                     if (response.body() != null) {
+                        mSwipeRefreshLayout.setRefreshing(false);
                         articleArrayList.addAll(response.body().getArticleList());
                         if (!articleArrayList.isEmpty()) {
                             Log.d("Articles", articleArrayList.size() + "");
@@ -272,6 +289,7 @@ public class HomeActivity extends AppCompatActivity
             if(articleArrayList.isEmpty()) {
                 mRecyclerView.setVisibility(View.GONE);
                 noDataTextView.setText(R.string.network_unavailable);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         }
     }
@@ -306,6 +324,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mSwipeRefreshLayout.setRefreshing(true);
         return new CursorLoader(this,
                 ArticleContract.ArticleEntry.CONTENT_URI,
                 ARTICLE_COLUMNS,
@@ -322,12 +341,14 @@ public class HomeActivity extends AppCompatActivity
                 Article article = Article.fromCursor(cursor);
                 articleArrayList.add(article);
             }while (cursor.moveToNext());
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mRecyclerView.scrollToPosition(0);
+            articleAdapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
         } else {
             fetchStories();
         }
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mRecyclerView.scrollToPosition(0);
-        articleAdapter.notifyDataSetChanged();
+
     }
 
     @Override
