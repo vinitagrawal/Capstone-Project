@@ -1,5 +1,7 @@
 package me.vinitagrawal.bullets.Utility;
 
+import android.text.format.DateUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,5 +23,9 @@ public class Utility {
         }
 
         return null;
+    }
+
+    public static CharSequence getRelativeDate(Date publishedAt) {
+        return DateUtils.getRelativeTimeSpanString(publishedAt.getTime(), System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS);
     }
 }

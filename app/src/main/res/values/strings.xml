@@ -22,4 +22,5 @@
     <string name="empty"></string>
     <string name="article_image_content_description">Article Image</string>
     <string name="source_logo_content_description">Source Logo</string>
+    <string name="bullet_symbol">&#8226;&#160;</string>
 </resources>

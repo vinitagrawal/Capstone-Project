@@ -3,7 +3,6 @@ package me.vinitagrawal.bullets.view.adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Date;
 import java.util.List;
 
 import me.vinitagrawal.bullets.R;
 import me.vinitagrawal.bullets.model.Article;
+
+import static me.vinitagrawal.bullets.Utility.Utility.getRelativeDate;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
 
@@ -82,10 +82,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 ((ItemClickCallback) mContext).onItemSelected(article);
             }
         });
-    }
-
-    private CharSequence getRelativeDate(Date publishedAt) {
-        return DateUtils.getRelativeTimeSpanString(publishedAt.getTime(), System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS);
     }
 
     @Override

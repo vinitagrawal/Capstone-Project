@@ -1,6 +1,7 @@
-package me.vinitagrawal.bullets.view;
+package me.vinitagrawal.bullets.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -23,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -337,6 +337,10 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onItemSelected(Article article) {
-        Toast.makeText(this, article.toString(), Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ArticleDetailActivity.ARTICLE_INTENT_KEY, article);
+        Intent intent = new Intent(this, ArticleDetailActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

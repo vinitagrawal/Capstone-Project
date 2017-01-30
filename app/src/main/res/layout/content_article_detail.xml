@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    tools:showIn="@layout/activity_article_detail">
+
+    <TextView
+        android:id="@+id/article_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        tools:text="Title" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:id="@+id/source_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/source_logo_content_description"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/source_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@+id/source_image"
+            android:layout_toStartOf="@+id/post_time"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Techcrunch" />
+
+        <TextView
+            android:id="@+id/post_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="26 Jan" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/article_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textStyle="italic"
+        tools:text="Vinit Agrawal" />
+
+    <TextView
+        android:id="@+id/article_bullet_points"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/black"
+        tools:text="This is a sample sentence" />
+
+
+    <TextView
+        android:id="@+id/full_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:onClick="openFullStory"
+        android:text="Read Full Story"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/colorPrimary" />
+
+</LinearLayout>

@@ -3,7 +3,7 @@
     package="me.vinitagrawal.bullets">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".view.HomeActivity"
+            android:name=".view.activity.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,9 +21,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.activity.ArticleDetailActivity"
+            android:parentActivityName=".view.activity.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.activity.HomeActivity" />
+        </activity>
+
         <provider
-            android:authorities="me.vinitagrawal.bullets"
-            android:name=".data.ArticleProvider" />
+            android:name=".data.ArticleProvider"
+            android:exported="false"
+            android:authorities="me.vinitagrawal.bullets" />
     </application>
 
 </manifest>

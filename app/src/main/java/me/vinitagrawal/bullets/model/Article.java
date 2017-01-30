@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import me.vinitagrawal.bullets.view.HomeActivity;
+import me.vinitagrawal.bullets.view.activity.HomeActivity;
 
 import static me.vinitagrawal.bullets.Utility.Constants.ARRAY_DIVIDER;
 import static me.vinitagrawal.bullets.Utility.Utility.convertStringToDate;
