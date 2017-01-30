@@ -28,6 +28,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -37,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.vinitagrawal.bullets.BuildConfig;
+import me.vinitagrawal.bullets.BulletAnalytics;
 import me.vinitagrawal.bullets.R;
 import me.vinitagrawal.bullets.Utility.Constants;
 import me.vinitagrawal.bullets.data.ArticleContract;
@@ -59,15 +62,19 @@ public class HomeActivity extends AppCompatActivity
 
     private static final int ARTICLE_LOADER = 0;
     private static final String ARTICLE_SAVEDINSTANCE_KEY = "articleArrayList";
-    private Map<String, String> queryOptions = new HashMap<>();
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
+    private Map<String, String> queryOptions = new HashMap<>();
+    private ArrayList<Article> articleArrayList = new ArrayList<>();
     private String category;
+
     private TextView noDataTextView;
     private RecyclerView mRecyclerView;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ArticleAdapter articleAdapter;
 
-    private ArrayList<Article> articleArrayList = new ArrayList<>();
-
+    private Tracker mTracker;
     public static final String[] ARTICLE_COLUMNS = {
             ArticleContract.ArticleEntry.COLUMN_ARTICLE_ID,
             ArticleContract.ArticleEntry.COLUMN_ARTICLE_TITLE,
@@ -90,7 +97,6 @@ public class HomeActivity extends AppCompatActivity
     public static final int COL_ARTICLE_AUTHOR = 7;
     public static final int COL_ARTICLE_PERMALINK = 8;
     public static final int COL_ARTICLE_PUBLISHED_AT = 9;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +155,21 @@ public class HomeActivity extends AppCompatActivity
                 .build();
         mAdView.loadAd(adRequest);
 
+        BulletAnalytics application = (BulletAnalytics) getApplication();
+        mTracker = application.getDefaultTracker();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: " + "Articles List");
+        mTracker.setScreenName("Image~" + "Articles List");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Articles")
+                .setAction("List")
+                .build());
     }
 
     private void refreshItems() {

@@ -5,16 +5,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import me.vinitagrawal.bullets.BulletAnalytics;
 import me.vinitagrawal.bullets.R;
 import me.vinitagrawal.bullets.model.Article;
 
@@ -23,7 +27,9 @@ import static me.vinitagrawal.bullets.Utility.Utility.getRelativeDate;
 public class ArticleDetailActivity extends AppCompatActivity {
 
     public static final String ARTICLE_INTENT_KEY = "ARTICLE";
+    private static final String TAG = ArticleDetailActivity.class.getSimpleName();
     private Article article;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +64,26 @@ public class ArticleDetailActivity extends AppCompatActivity {
         titleTextView.setText(article.getTitle());
         sourceTextView.setText(article.getSourceName());
         timeTextView.setText(getRelativeDate(article.getPublishedAt()));
-        authorTextView.setText(String.format("- By %s", article.getAuthor()));
+        if(!article.getAuthor().isEmpty()) {
+            authorTextView.setText(String.format("- By %s", article.getAuthor()));
+        }
         bulletsTextView.setText(setBulletPoints(article.getSentences()));
 
+        BulletAnalytics application = (BulletAnalytics) getApplication();
+        mTracker = application.getDefaultTracker();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: " + "Article Detail");
+        mTracker.setScreenName("Image~" + "Article Detail");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Articles")
+                .setAction("Bullets Read")
+                .build());
     }
 
     @Override

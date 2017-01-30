@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "898643155143",
+    "project_id": "firebase-bullets"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:898643155143:android:9cbfc74a3066b333",
+        "android_client_info": {
+          "package_name": "me.vinitagrawal.bullets"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3UBTwp0xXEdA4owPQrF0ICQVxbEFg6Gg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-91132076-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
