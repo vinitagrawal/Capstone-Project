@@ -16,9 +16,10 @@
         android:textStyle="bold"
         tools:text="Title" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="16dp">
 
         <ImageView
@@ -26,28 +27,30 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:contentDescription="@string/source_logo_content_description"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/source_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_marginStart="12dp"
-            android:layout_toEndOf="@+id/source_image"
-            android:layout_toStartOf="@+id/post_time"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="Techcrunch" />
+            tools:text="Techcrunch"
+            android:layout_weight="6"/>
 
         <TextView
             android:id="@+id/post_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:gravity="end"
+            android:layout_gravity="end"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="26 Jan" />
+            tools:text="26 Jan"
+            android:layout_weight="3"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/article_author"
@@ -74,7 +77,7 @@
         android:layout_marginBottom="10dp"
         android:clickable="true"
         android:onClick="openFullStory"
-        android:text="Read Full Story"
+        android:text="@string/read_full_story"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorPrimary" />
 
