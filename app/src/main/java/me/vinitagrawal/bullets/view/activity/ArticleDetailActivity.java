@@ -59,7 +59,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                     .placeholder(R.color.cardview_light_background)
                     .into(sourceImageView);
         } else
-            sourceImageView.setVisibility(View.INVISIBLE);
+            sourceImageView.setVisibility(View.GONE);
 
         titleTextView.setText(article.getTitle());
         sourceTextView.setText(article.getSourceName());

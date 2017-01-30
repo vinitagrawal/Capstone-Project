@@ -70,7 +70,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     .placeholder(R.color.cardview_light_background)
                     .into(holder.sourceImageView);
         } else
-            holder.sourceImageView.setVisibility(View.INVISIBLE);
+            holder.sourceImageView.setVisibility(View.GONE);
 
         holder.titleTextView.setText(article.getTitle());
         holder.sourceTextView.setText(article.getSourceName());
